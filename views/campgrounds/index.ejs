@@ -1,4 +1,5 @@
 <% layout('layouts/boilerplate')%>
+<div id="map" style="width:100%; height:500px"></div>
 <h1>All Campgrounds</h1>
 <div>
 	<a href="/campgrounds/new">Add Campground</a>
@@ -11,6 +12,7 @@
 				<img class="img-fluid" alt="" src="<%=campground.images[0].url%>">
 			<%}else{%>
 				<img class="img-fluid" alt="" src="https://res.cloudinary.com/dgd1vqykn/image/upload/v1631282333/YelpCamp/bpyjnnrm23mghd2htxha.jpg">
+				<!-- 이렇게 default 지정 가능: DB에 있는 img 가져다 쓰고, Edit 같은거 할 떄 image 하나도 없어지는 순간에 default 지정되는 과정 등.. -->
 			<%}%>
 		</div>
 		<div class="col-md-8">
@@ -26,3 +28,9 @@
 	</div>
 </div>
 <% }%>
+
+<script>
+	const mapToken = "<%-process.env.MAPBOX_TOKEN%>";
+	const campgrounds = {features: <%-JSON.stringify(campgrounds)%>}; //정확한 form에 맞춰서 data를 넘겨줘야함
+</script>
+<script src="/javascripts/clusterMap.js"></script>
