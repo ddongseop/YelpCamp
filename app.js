@@ -20,8 +20,11 @@ const mongoSanitize = require('express-mongo-sanitize');
 
 const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
-const reviewRoutes  = require('./routes/reviews');
+const reviewRoutes = require('./routes/reviews');
+const MongoStore = require('connect-mongo');
 
+//const dbUrl = process.env.DB_URL;
+//'mongodb://localhost:27017/yelp-camp',
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
 	useNewUrlParser: true,
 	//useCreateIndex: true, -> 이거 이젠 필요 없음
@@ -45,7 +48,18 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
 
+const store = MongoStore.create({
+	mongoUrl: 'mongodb://localhost:27017/yelp-camp',
+	secret: 'thisshouldbeabettersecret!',
+	touchAfter: 24 * 3600
+});
+
+store.on("error", function(e){
+	console.log("SESSION STORE ERROR", e);
+});
+
 const sessionConfig = {
+	store,
 	name: 'blah',
 	secret: 'thisshouldbeabettersecret!',
 	resave: false,
